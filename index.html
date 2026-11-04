@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استودیو تبلیغات محمدزاده | سامانه مدیریت هوشمند</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Vazirmatn', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Vazirmatn', 'monospace'],
+          },
+          colors: { zinc: { 950: '#09090b' } }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body { font-family: 'Vazirmatn', -apple-system, sans-serif; letter-spacing: -0.01em; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(161, 161, 170, 0.25); border-radius: 9999px; }
+    
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .dark .glass-nav {
+      background: rgba(0, 0, 0, 0.80); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px -4px rgba(0, 0, 0, 0.04);
+    }
+    .dark .glass-card {
+      background: rgba(9, 9, 11, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+    .glass-subtle {
+      background: rgba(244, 244, 245, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+    .dark .glass-subtle {
+      background: rgba(24, 24, 27, 0.55); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-[#FBFBFC] text-zinc-900 dark:bg-[#000000] dark:text-zinc-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-sm w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-white/10 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto overflow-hidden shadow-lg">
+        <span class="text-xl font-bold text-white">م</span>
+      </div>
+      <div>
+        <h1 class="font-bold text-base text-white">استودیو تبلیغات محمدزاده</h1>
+        <p class="text-xs text-zinc-400 mt-1">ورود به سامانه مدیریت هوشمند آژانس</p>
+      </div>
+      <form onsubmit="handleLogin(event)" class="space-y-4 text-xs text-right">
+        <div>
+          <label class="block mb-1.5 text-zinc-300">نام کاربری</label>
+          <input type="text" id="login-user" required placeholder="admin یا supervisor" class="w-full h-10 px-3 rounded-xl bg-zinc-900 border border-white/10 text-white focus:outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block mb-1.5 text-zinc-300">رمز عبور</label>
+          <input type="password" id="login-pass" required placeholder="••••••••" class="w-full h-10 px-3 rounded-xl bg-zinc-900 border border-white/10 text-white focus:outline-none focus:border-blue-500" />
+        </div>
+        <button type="submit" class="w-full h-10 rounded-xl bg-white text-zinc-950 font-bold transition-all hover:bg-zinc-200 cursor-pointer shadow-md">
+          ورود به پنل
+        </button>
+      </form>
+      <div class="text-[10px] text-zinc-500 text-center leading-relaxed">
+        مدیر: <code class="text-zinc-300">admin / 1234</code> | سرپرست: <code class="text-zinc-300">supervisor / 1234</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="app-container" class="hidden flex-1 flex flex-col min-h-screen">
+    
+    <!-- Top Navigation Bar -->
+    <header class="glass-nav sticky top-0 z-40 px-3 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-zinc-900 border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden shadow-sm">
+            <span class="text-sm font-bold text-white">م</span>
+          </div>
+          <div>
+            <span class="font-bold text-xs sm:text-sm tracking-tight text-zinc-950 dark:text-white block">استودیو تبلیغات محمدزاده</span>
+            <div class="flex items-center gap-2">
+              <span id="user-role-badge" class="text-[10px] text-zinc-400 font-mono">نقش: مدیر کل</span>
+              <select id="role-switcher" onchange="switchUserRole(this.value)" class="text-[10px] bg-zinc-800 text-zinc-300 rounded px-1 py-0.5 border border-white/10 cursor-pointer hidden">
+                <option value="MANAGER">مدیر کل</option>
+                <option value="SUPERVISOR">سرپرست</option>
+                <option value="SCRIPTWRITER">سناریست</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:hidden">
+          <button onclick="toggleNotifications()" class="relative w-8 h-8 rounded-xl border border-black/[0.06] dark:border-white/[0.10] bg-white/50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-600 dark:text-zinc-400 cursor-pointer">
+            <i data-lucide="bell" class="w-3.5 h-3.5"></i>
+            <span class="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500"></span>
+          </button>
+          <button onclick="toggleTheme()" class="w-8 h-8 rounded-xl border border-black/[0.06] dark:border-white/[0.10] bg-white/50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-600 dark:text-zinc-400 cursor-pointer">
+            <i id="theme-icon-mob" data-lucide="sun" class="w-3.5 h-3.5 text-amber-400"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Module Tabs -->
+      <nav id="nav-tabs" class="flex items-center p-1 rounded-xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-black/[0.05] dark:border-white/[0.08] overflow-x-auto max-w-full">
+        <button id="tab-home" onclick="switchModule('HOME')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 bg-white dark:bg-zinc-800 text-zinc-950 dark:text-white shadow-xs whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i><span>نمای کلی (خانه)</span>
+        </button>
+        <button id="tab-pipeline" onclick="switchModule('PIPELINE')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="kanban" class="w-3.5 h-3.5"></i><span>مسیر تولید محتوا</span>
+        </button>
+        <button id="tab-schedule" onclick="switchModule('SCHEDULE')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-400"></i><span>تقویم تصویربرداری</span>
+        </button>
+        <button id="tab-ai-script" onclick="switchModule('AI_SCRIPT')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-400"></i><span>هوش مصنوعی (سناریو)</span>
+        </button>
+        <button id="tab-contracts" onclick="switchModule('CONTRACTS')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5"></i><span>قراردادها و مهلت پرداخت</span>
+        </button>
+        <button id="tab-payroll" onclick="switchModule('PAYROLL')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="users" class="w-3.5 h-3.5"></i><span>پرسنل و حقوق</span>
+        </button>
+        <button id="tab-finance" onclick="switchModule('FINANCE')" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap cursor-pointer transition-all">
+          <i data-lucide="pie-chart" class="w-3.5 h-3.5"></i><span>سود و زیان و مالی</span>
+        </button>
+      </nav>
+
+      <!-- Desktop Actions -->
+      <div class="hidden sm:flex items-center gap-2.5">
+        <button onclick="toggleNotifications()" class="relative w-9 h-9 rounded-xl border border-black/[0.06] dark:border-white/[0.10] bg-white/50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white cursor-pointer">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span id="notif-badge-dot" class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-black"></span>
+        </button>
+        <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl border border-black/[0.06] dark:border-white/[0.10] bg-white/50 dark:bg-zinc-900/50 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white cursor-pointer">
+          <i id="theme-icon-desk" data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+        </button>
+        <button onclick="logout()" class="px-3 py-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500/20 text-xs font-medium transition-all cursor-pointer">خروج</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-[1360px] w-full mx-auto px-3 sm:px-8 py-6 space-y-6">
+      
+      <!-- MODULE 0: HOME -->
+      <div id="module-home" class="space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 dark:text-white">داشبورد مدیریتی استودیو</h1>
+            <p class="text-xs text-zinc-500 mt-0.5">خلاصه وضعیت، اطلاعات کلیدی و گزارش روزانه</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="daily-occasion-badge" class="px-3 py-1 rounded-xl bg-purple-500/10 text-purple-400 text-xs font-medium flex items-center gap-1.5 border border-purple-500/20">
+              <i data-lucide="calendar-heart" class="w-3.5 h-3.5"></i> <span id="occasion-text">مناسبت امروز: روز ملی کیفیت و ارتباطات دیجیتال</span>
+            </span>
+            <span id="live-datetime" class="px-3 py-1 rounded-xl bg-blue-500/10 text-blue-500 text-xs font-mono font-medium">--</span>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-500 space-y-3 relative overflow-hidden">
+          <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                <i data-lucide="coffee" class="w-4 h-4"></i>
+              </div>
+              <h3 class="font-bold text-sm text-zinc-950 dark:text-white">گزارش روزانه صبحانه (وضعیت و عقب‌افتادگی‌ها)</h3>
+            </div>
+            <span class="text-[10px] text-zinc-400 font-mono">بروزرسانی خودکار لحظه‌ای</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-zinc-100/60 dark:bg-black/40 border border-black/5 dark:border-white/5 space-y-1">
+              <div class="font-semibold text-amber-500 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> مهلت‌های پرداخت و چک‌ها</div>
+              <p id="briefing-payments" class="text-zinc-600 dark:text-zinc-400 text-[11px]">در حال بررسی سررسید چک‌ها و مهلت‌های تسویه...</p>
+            </div>
+            <div class="p-3 rounded-xl bg-zinc-100/60 dark:bg-black/40 border border-black/5 dark:border-white/5 space-y-1">
+              <div class="font-semibold text-emerald-500 flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> تقویم تصویربرداری هفته</div>
+              <p id="briefing-schedule" class="text-zinc-600 dark:text-zinc-400 text-[11px]">تعداد جلسات ضبط فرمولی تنظیم شد (شنبه تا چهارشنبه).</p>
+            </div>
+            <div class="p-3 rounded-xl bg-zinc-100/60 dark:bg-black/40 border border-black/5 dark:border-white/5 space-y-1">
+              <div class="font-semibold text-blue-500 flex items-center gap-1"><i data-lucide="trending-up" class="w-3.5 h-3.5"></i> سود و زیان خالص</div>
+              <p id="briefing-profit" class="text-zinc-600 dark:text-zinc-400 text-[11px]">محاسبه هوشمند بر اساس هزینه‌ها و قراردادها فعال است.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="glass-card rounded-2xl p-4 space-y-1">
+            <div class="text-xs text-zinc-500">قراردادهای فعال</div>
+            <div id="stat-contracts-count" class="text-xl font-bold font-mono">۰</div>
+          </div>
+          <div class="glass-card rounded-2xl p-4 space-y-1">
+            <div class="text-xs text-zinc-500">تسک‌های در جریان</div>
+            <div id="stat-tasks-count" class="text-xl font-bold font-mono">۰</div>
+          </div>
+          <div class="glass-card rounded-2xl p-4 space-y-1">
+            <div class="text-xs text-zinc-500">جلسات تصویربرداری ثبت شده</div>
+            <div id="stat-schedule-count" class="text-xl font-bold font-mono text-blue-400">۰</div>
+          </div>
+          <div class="glass-card rounded-2xl p-4 space-y-1">
+            <div class="text-xs text-zinc-500">درآمد ماهانه (MRR)</div>
+            <div id="stat-mrr-sum" class="text-lg font-bold font-mono text-emerald-500">۰ تومان</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODULE 1: PIPELINE -->
+      <div id="module-pipeline" class="space-y-4 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 dark:text-white">مسیر تولید محتوا</h1>
+            <p class="text-xs text-zinc-500 mt-0.5">مدیریت مراحل تولید از سناریو تا انتشار</p>
+          </div>
+        </div>
+        <div class="overflow-x-auto pb-4">
+          <div id="kanban-columns-container" class="min-w-[1100px] grid grid-cols-6 gap-3"></div>
+        </div>
+      </div>
+
+      <!-- MODULE 1.5: SCHEDULE & FORMULA CALENDAR (تقویم تصویربرداری فرمولی) -->
+      <div id="module-schedule" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white">برنامه‌ریزی فرمولی زمان‌های تصویربرداری</h2>
+            <p class="text-xs text-zinc-500 mt-0.5">چیدمان اتوماتیک بر اساس تعداد کار پروژه‌ها (شنبه تا چهارشنبه، ساعت ۱۰ تا ۱۹) همراه با اولویت‌بندی</p>
+          </div>
+          <button onclick="autoScheduleCalendar()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium flex items-center gap-1.5 cursor-pointer">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> چیدمان فرمولی خودکار تقویم
+          </button>
+        </div>
+        <div class="glass-card rounded-2xl p-4 space-y-4">
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse min-w-[700px]">
+              <thead>
+                <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                  <th class="py-3 px-3">روز هفته</th>
+                  <th class="py-3 px-3">ساعت اجرا</th>
+                  <th class="py-3 px-3">پروژه / کارفرما</th>
+                  <th class="py-3 px-3">اولویت پروژه</th>
+                  <th class="py-3 px-3">تعداد کار فرمولی</th>
+                  <th class="py-3 px-3 text-center">وضعیت نوتیفیکیشن تیم</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-table-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODULE 2: AI SCRIPT -->
+      <div id="module-ai-script" class="space-y-4 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-6 h-6 text-purple-500"></i> دستیار هوشمند سناریونویسی (API هوش مصنوعی)
+          </h2>
+          <p class="text-xs text-zinc-500 mt-0.5">تولید سریع قلاب (Hook)، بدنه و کال تو اکشن (CTA) برای ریلز و ویدیوها</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="glass-card rounded-2xl p-5 space-y-3 lg:col-span-1">
+            <h3 class="font-bold text-sm text-zinc-950 dark:text-white">پارامترهای ویدیو</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block mb-1">موضوع یا محصول</label>
+                <input type="text" id="ai-topic" placeholder="مثلاً: معرفی صابون ارگانیک زاگرس" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/10 dark:border-white/10" />
+              </div>
+              <div>
+                <label class="block mb-1">لحن ویدیو</label>
+                <select id="ai-tone" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/10 dark:border-white/10">
+                  <option value="انگیزشی و ترغیب‌کننده">انگیزشی و ترغیب‌کننده</option>
+                  <option value="آموزشی و تخصصی">آموزشی و تخصصی</option>
+                  <option value="طنز و سرگرم‌کننده">طنز و سرگرم‌کننده</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-1">هدف ویدیو (CTA)</label>
+                <input type="text" id="ai-cta" placeholder="مثلاً: کامنت گذاشتن برای دریافت قیمت" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/10 dark:border-white/10" />
+              </div>
+              <button onclick="generateAiScript()" class="w-full h-10 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                <i data-lucide="sparkles" class="w-4 h-4"></i> تولید سناریو با هوش مصنوعی
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-5 space-y-3 lg:col-span-2 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-zinc-950 dark:text-white mb-2">خروجی سناریو</h3>
+              <div id="ai-output-box" class="p-4 rounded-xl bg-zinc-100 dark:bg-black/50 border border-black/5 dark:border-white/10 text-xs leading-relaxed font-mono min-h-[220px] whitespace-pre-line text-zinc-700 dark:text-zinc-300">
+                هنوز سناریویی تولید نشده است. پارامترها را وارد کرده و روی دکمه تولید کلیک کنید...
+              </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button onclick="copyAiScript()" class="px-3 py-1.5 rounded-xl border border-black/10 dark:border-white/10 text-xs cursor-pointer">کپی متن</button>
+              <button onclick="saveAiScriptToPipeline()" class="px-4 py-1.5 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-medium cursor-pointer">ارسال به مسیر تولید</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODULE 3: CONTRACTS & PAYMENT TERMS -->
+      <div id="module-contracts" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white">قراردادها، مهلت پرداخت و ثبت چک</h2>
+            <p class="text-xs text-zinc-500 mt-0.5">مدیریت بازه‌های مهلت تسویه، وضعیت چک‌ها و ادمین‌های پیج</p>
+          </div>
+          <button id="btn-add-contract" onclick="openContractModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> ثبت قرارداد جدید
+          </button>
+        </div>
+        <div class="glass-card rounded-2xl overflow-x-auto p-2 sm:p-4">
+          <table class="w-full text-right border-collapse min-w-[1000px]">
+            <thead>
+              <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                <th class="py-3 px-3">کارفرما و آیدی</th>
+                <th class="py-3 px-3">بازه همکاری و وضعیت</th>
+                <th class="py-3 px-3">مبلغ و مهلت پرداخت / چک</th>
+                <th class="py-3 px-3">ادمین پیج و نوع ادمینی</th>
+                <th class="py-3 px-3 text-center">گزارش تلگرام</th>
+                <th class="py-3 px-3 text-center">عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="contracts-table-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODULE 4: PAYROLL -->
+      <div id="module-payroll" class="space-y-4 hidden">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white">مدیریت پرسنل و حقوق ثابت</h2>
+            <p class="text-xs text-zinc-500 mt-0.5">ثبت و مدیریت اعضای تیم بر مبنای حقوق کلی ماهیانه</p>
+          </div>
+          <button id="btn-add-staff" onclick="openStaffModal()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> ثبت پرسنل جدید
+          </button>
+        </div>
+        <div class="glass-card rounded-2xl overflow-x-auto p-2 sm:p-4">
+          <table class="w-full text-right border-collapse min-w-[600px]">
+            <thead>
+              <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                <th class="py-3 px-3">نام پرسنل و سمت</th>
+                <th class="py-3 px-3">حقوق ثابت ماهیانه</th>
+                <th class="py-3 px-3">نرخ پورسانت</th>
+                <th class="py-3 px-3">وضعیت</th>
+                <th class="py-3 px-3 text-center">عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="payroll-table-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MODULE 5: FINANCE & P&L (سود و زیان مشتریان) -->
+      <div id="module-finance" class="space-y-6 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white">سود و زیان و گزارش مالی پیشرفته</h2>
+          <p class="text-xs text-zinc-500 mt-0.5">محاسبه دقیق هزینه تمام‌شده و سود خالص هر مشتری به‌صورت فرمولی (با قابلیت افزودن/کاهش خودکار مشتری)</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="glass-card rounded-2xl p-5 space-y-2">
+            <div class="text-xs text-zinc-500">کل درآمد مکرر ماهانه (MRR)</div>
+            <div id="fin-mrr" class="text-2xl font-bold font-mono text-zinc-950 dark:text-white">۰ تومان</div>
+            <div class="text-[10px] text-emerald-500">مجموع قراردادهای فعال ریتینر</div>
+          </div>
+          <div class="glass-card rounded-2xl p-5 space-y-2">
+            <div class="text-xs text-zinc-500">کل حقوق و دستمزد پرسنل</div>
+            <div id="fin-base-payroll" class="text-2xl font-bold font-mono text-rose-500">۰ تومان</div>
+            <div class="text-[10px] text-zinc-400">حقوق ثابت + حق‌الزحمه ادمینی پیج‌ها</div>
+          </div>
+          <div class="glass-card rounded-2xl p-5 space-y-2">
+            <div class="text-xs text-zinc-500">مجموع هزینه‌های متفرقه آژانس</div>
+            <div id="fin-expenses-sum" class="text-2xl font-bold font-mono text-amber-500">۰ تومان</div>
+            <div class="text-[10px] text-zinc-400">پذیرایی، کرایه تجهیزات، اشتراک و...</div>
+          </div>
+          <div class="glass-card rounded-2xl p-5 space-y-2">
+            <div class="text-xs text-zinc-500">سود ناخالص کل آژانس</div>
+            <div id="fin-profit" class="text-2xl font-bold font-mono text-blue-500">۰ تومان</div>
+            <div class="text-[10px] text-blue-400">درآمد منهای کل هزینه‌ها</div>
+          </div>
+        </div>
+
+        <!-- Customer Profitability & Cost Breakdown (سود و هزینه تمام شده هر مشتری) -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <h3 class="font-bold text-sm text-zinc-950 dark:text-white">تحلیل سود و هزینه تمام‌شده به ازای هر مشتری (P&L)</h3>
+          <p class="text-xs text-zinc-500">هزینه‌های سربار و دستمزد ادمین‌ها به نسبت سهمیه محتوا فرمولی بین مشتریان تسهیم می‌شود.</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse min-w-[750px]">
+              <thead>
+                <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                  <th class="py-3 px-3">نام مشتری / برند</th>
+                  <th class="py-3 px-3">درآمد قرارداد (مبلغ)</th>
+                  <th class="py-3 px-3">هزینه تمام‌شده تخصیصی</th>
+                  <th class="py-3 px-3">سود خالص مشتری</th>
+                  <th class="py-3 px-3">حاشیه سود (%)</th>
+                </tr>
+              </thead>
+              <tbody id="client-pl-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Expense Management Section -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <h3 class="font-bold text-sm text-zinc-950 dark:text-white">ثبت و مدیریت هزینه‌های آژانس</h3>
+            <button onclick="openExpenseModal()" class="px-3 py-1.5 rounded-xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-xs font-medium cursor-pointer">ثبت هزینه جدید</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse min-w-[600px]">
+              <thead>
+                <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                  <th class="py-3 px-3">عنوان / نوع هزینه</th>
+                  <th class="py-3 px-3">دسته‌بندی</th>
+                  <th class="py-3 px-3">مبلغ (تومان)</th>
+                  <th class="py-3 px-3">تاریخ ثبت</th>
+                  <th class="py-3 px-3 text-center">عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="expenses-table-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Admin Earnings Breakdown -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <h3 class="font-bold text-sm text-zinc-950 dark:text-white">محاسبه حقوق ادمینی پیج‌ها (تا پایان ماه جاری)</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse min-w-[700px]">
+              <thead>
+                <tr class="border-b border-black/[0.04] dark:border-white/[0.06] text-xs text-zinc-500">
+                  <th class="py-3 px-3">نام پرسنل (ادمین)</th>
+                  <th class="py-3 px-3">پیج‌های تحت مدیریت</th>
+                  <th class="py-3 px-3">حقوق ثابت</th>
+                  <th class="py-3 px-3">حق‌الزحمه ادمینی پیج‌ها تا پایان ماه</th>
+                  <th class="py-3 px-3">مجموع دریافتی / وضعیت تسویه</th>
+                </tr>
+              </thead>
+              <tbody id="admin-earnings-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.06] text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- FLOATING AI CHAT ASSISTANT -->
+  <div id="ai-chat-widget" class="hidden fixed bottom-5 left-5 z-50 w-80 glass-card rounded-2xl shadow-2xl border border-white/10 flex flex-col overflow-hidden">
+    <div class="bg-zinc-900 px-4 py-3 flex items-center justify-between text-white text-xs font-medium">
+      <div class="flex items-center gap-2"><i data-lucide="bot" class="w-4 h-4 text-blue-400"></i> دستیار هوش مصنوعی استودیو</div>
+      <button onclick="toggleAiChat()" class="text-zinc-400 hover:text-white cursor-pointer">✕</button>
+    </div>
+    <div id="chat-messages" class="p-3 space-y-2 text-xs h-64 overflow-y-auto bg-black/40">
+      <div class="p-2.5 rounded-xl bg-zinc-800 text-zinc-200 max-w-[85%]">سلام! من دستیار هوشمند استودیو تبلیغات محمدزاده هستم. چطور می‌توانم کمکتان کنم؟</div>
+    </div>
+    <div class="p-2.5 bg-zinc-900 border-t border-white/5 flex gap-2">
+      <input type="text" id="chat-input" placeholder="سوال خود را بپرسید..." class="flex-1 h-8 px-3 rounded-xl bg-zinc-800 border border-white/10 text-white text-xs focus:outline-none" />
+      <button onclick="sendChatMessage()" class="px-3 h-8 rounded-xl bg-blue-600 text-white text-xs font-medium cursor-pointer">ارسال</button>
+    </div>
+  </div>
+  <button onclick="toggleAiChat()" class="fixed bottom-5 left-5 z-40 w-12 h-12 rounded-full bg-blue-600 text-white shadow-2xl flex items-center justify-center hover:bg-blue-700 cursor-pointer">
+    <i data-lucide="message-square" class="w-5 h-5"></i>
+  </button>
+
+  <!-- NOTIFICATION PANEL -->
+  <div id="notification-panel" class="hidden fixed top-16 left-5 z-50 w-72 glass-card rounded-2xl shadow-2xl border border-white/10 p-4 space-y-3 text-xs">
+    <div class="flex items-center justify-between font-bold text-zinc-950 dark:text-white pb-2 border-b border-white/5">
+      <span>اعلان‌ها و نوتیفیکیشن‌ها</span>
+      <span class="text-[10px] text-blue-500 cursor-pointer" onclick="clearNotifications()">خواندن همه</span>
+    </div>
+    <div id="notif-list" class="space-y-2 max-h-60 overflow-y-auto">
+      <div class="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800/50 space-y-0.5">
+        <div class="font-semibold text-zinc-900 dark:text-zinc-100">سیستم تقویم و مالی فعال است</div>
+        <div class="text-[10px] text-zinc-500">برنامه‌ریزی فرمولی تصویربرداری و محاسبه P&L انجام شد.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONTRACT (Updated with payment term & check details) -->
+  <div id="modal-contract" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col p-5 sm:p-6 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-white/5"><h3 id="contract-modal-title" class="font-bold text-sm sm:text-base text-zinc-950 dark:text-white">ثبت قرارداد ریتینر جدید</h3><button onclick="closeModal('modal-contract')" class="text-zinc-400 hover:text-zinc-700 cursor-pointer">✕</button></div>
+      <form onsubmit="handleSaveContract(event)" class="space-y-3 text-xs overflow-y-auto flex-1 py-3 pr-1">
+        <input type="hidden" id="con-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block mb-1">نام کارفرما / برند</label><input type="text" id="con-client" required placeholder="مثلاً: کلینیک آریابان" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+          <div><label class="block mb-1">آیدی پیج یا کانال</label><input type="text" id="con-handle" required placeholder="@ariyaban_clinic" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block mb-1">شماره تماس</label><input type="text" id="con-phone" required placeholder="0911..." class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+          <div><label class="block mb-1">مبلغ ریتینر ماهانه (تومان)</label><input type="number" id="con-fee" required placeholder="مثلاً: 50000000" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label class="block mb-1">تاریخ شروع قرارداد</label><input type="text" id="con-start" required placeholder="1405/08/01" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+          <div><label class="block mb-1">تاریخ پایان قرارداد (یا همکاری)</label><input type="text" id="con-end" required placeholder="1406/08/01" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block mb-1">مهلت پرداخت (روز یا بازه)</label>
+            <input type="text" id="con-due" required placeholder="مثلاً: تا ۱۰م هر ماه / تسویه ۱۰ روزه" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" />
+          </div>
+          <div>
+            <label class="block mb-1">وضعیت پرداخت / ثبت چک</label>
+            <select id="con-pay-type" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100">
+              <option value="نقدی / واریز مستقیم">نقدی / واریز مستقیم</option>
+              <option value="پرداخت با چک (ثبت شده)">پرداخت با چک (ثبت شده)</option>
+              <option value="چک صیادی در انتظار وصول">چک صیادی در انتظار وصول</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block mb-1">انتخاب ادمین پیج</label>
+            <select id="con-admin" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100"></select>
+          </div>
+          <div>
+            <label class="block mb-1">نوع ادمینی پیج</label>
+            <select id="con-admin-type" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100">
+              <option value="FULL">کل ادمینی (روزانه ۱۱۶,۶۷۰ تومان)</option>
+              <option value="HALF">نصف ادمینی (روزانه ۵۸,۴۰۰ تومان)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block mb-1">اولویت پروژه (جهت تقویم تصویربرداری)</label>
+          <select id="con-priority" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100">
+            <option value="1">اولویت اول (فوری و استراتژیک)</option>
+            <option value="2" selected>اولویت دوم (عادی)</option>
+            <option value="3">اولویت سوم (پروژه جانبی)</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="con-ended" class="w-4 h-4 rounded accent-rose-500" />
+          <label for="con-ended" class="text-xs text-rose-400 font-medium">پایان همکاری با این مشتری اعلام شده است (محاسبه تسویه/طلبکار)</label>
+        </div>
+        <div class="grid grid-cols-3 gap-2 pt-1">
+          <div><label class="block mb-1">ریلز</label><input type="number" id="con-reels" value="8" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+          <div><label class="block mb-1">کاروسل</label><input type="number" id="con-carousels" value="4" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+          <div><label class="block mb-1">عکس</label><input type="number" id="con-posts" value="4" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-white/5">
+          <button type="button" onclick="closeModal('modal-contract')" class="px-3 py-1.5 rounded-xl border border-black/[0.08] cursor-pointer">انصراف</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 cursor-pointer">ذخیره قرارداد</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: STAFF -->
+  <div id="modal-staff" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full max-h-[90vh] flex flex-col p-5 sm:p-6 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-white/5"><h3 id="staff-modal-title" class="font-bold text-sm sm:text-base text-zinc-950 dark:text-white">ثبت پرسنل جدید</h3><button onclick="closeModal('modal-staff')" class="text-zinc-400 hover:text-zinc-700 cursor-pointer">✕</button></div>
+      <form onsubmit="handleSaveStaff(event)" class="space-y-3 text-xs overflow-y-auto flex-1 py-3 pr-1">
+        <input type="hidden" id="st-id" />
+        <div><label class="block mb-1">نام و نام خانوادگی</label><input type="text" id="st-name" required placeholder="مثلاً: نیما افشار" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div><label class="block mb-1">سمت / تخصص</label><input type="text" id="st-role" required placeholder="مثلاً: تدوین‌گر ارشد" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div><label class="block mb-1">حقوق ثابت ماهیانه (تومان)</label><input type="number" id="st-base" required placeholder="مثلاً: 25000000" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div><label class="block mb-1">درصد پورسانت از قرارداد (%)</label><input type="number" step="0.1" id="st-rate" value="5" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-white/5">
+          <button type="button" onclick="closeModal('modal-staff')" class="px-3 py-1.5 rounded-xl border border-black/[0.08] cursor-pointer">انصراف</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 cursor-pointer">ذخیره پرسنل</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EXPENSE -->
+  <div id="modal-expense" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center"><h3 class="font-bold text-sm sm:text-base text-zinc-950 dark:text-white">ثبت هزینه متفرقه آژانس</h3><button onclick="closeModal('modal-expense')" class="text-zinc-400 hover:text-zinc-700 cursor-pointer">✕</button></div>
+      <form onsubmit="handleSaveExpense(event)" class="space-y-3 text-xs">
+        <div><label class="block mb-1">عنوان هزینه</label><input type="text" id="exp-title" required placeholder="مثلاً: خرید اشتراک ادوبی" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div>
+          <label class="block mb-1">دسته‌بندی هزینه</label>
+          <select id="exp-category" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100">
+            <option value="پذیرایی">پذیرایی</option>
+            <option value="ایاب و ذهاب">ایاب و ذهاب</option>
+            <option value="خرید تجهیزات یا ملزومات">خرید تجهیزات یا ملزومات</option>
+            <option value="پورسانت">پورسانت</option>
+            <option value="اضافه‌کاری">اضافه‌کاری</option>
+            <option value="آفیش پرسنل">آفیش پرسنل</option>
+            <option value="کرایه تجهیزات">کرایه تجهیزات</option>
+            <option value="تخفیف">تخفیف</option>
+            <option value="خرید اشتراک">خرید اشتراک</option>
+            <option value="اجاره">اجاره</option>
+            <option value="آبونمان">آبونمان</option>
+            <option value="سایر">سایر</option>
+          </select>
+        </div>
+        <div><label class="block mb-1">مبلغ (تومان)</label><input type="number" id="exp-amount" required placeholder="مثلاً: 2500000" class="w-full h-9 px-3 rounded-xl bg-zinc-50 dark:bg-black/60 border border-black/[0.08] dark:border-white/[0.1] text-zinc-900 dark:text-zinc-100" /></div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-expense')" class="px-3 py-1.5 rounded-xl border border-black/[0.08] cursor-pointer">انصراف</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 cursor-pointer">ثبت هزینه</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script Engine -->
+  <script>
+    const USERS = [
+      { username: 'admin', pass: '1234', role: 'MANAGER', name: 'مدیر کل (محمدزاده)' },
+      { username: 'supervisor', pass: '1234', role: 'SUPERVISOR', name: 'سرپرست استودیو' },
+      { username: 'script', pass: '1234', role: 'SCRIPTWRITER', name: 'سناریست ارشد' }
+    ];
+
+    let currentUser = null;
+
+    const PIPELINE_STAGES = [
+      { key: 'SCRIPT', title: 'نگارش سناریو', role: 'سناریست' },
+      { key: 'FILMING', title: 'ضبط و تصویربرداری', role: 'تصویربردار' },
+      { key: 'EDITING', title: 'تدوین ویدیویی', role: 'تدوین‌گر' },
+      { key: 'GRAPHIC_DESIGN', title: 'طراحی اسلاید', role: 'طراح' },
+      { key: 'QC_REVIEW', title: 'کنترل کیفیت QC', role: 'مدیر کیفی' },
+      { key: 'PUBLISHING', title: 'آماده انتشار', role: 'ادمین' },
+    ];
+
+    let deliverables = JSON.parse(localStorage.getItem('nexus_deliverables')) || [
+      { id: 'd-1', client: 'نوین اکسیر', title: 'معرفی سرم صورت', type: 'REEL', stage: 'SCRIPT' }
+    ];
+    let contracts = JSON.parse(localStorage.getItem('nexus_contracts')) || [
+      { id: 'c-1', client: 'نوین اکسیر', handle: '@novinexir', phone: '09111111111', fee: 45000000, start: '1405/08/01', end: '1406/08/01', due: 'تا ۱۰م هر ماه', payType: 'نقدی / واریز مستقیم', adminId: 'st-1', adminType: 'FULL', priority: '1', ended: false, quotas: { reels: 8, carousels: 4, posts: 4 }, status: 'فعال' }
+    ];
+    let staff = JSON.parse(localStorage.getItem('nexus_staff')) || [
+      { id: 'st-1', name: 'نیما افشار', role: 'تدوین‌گر / ادمین', base: 25000000, rate: 5, status: 'فعال' }
+    ];
+    let expenses = JSON.parse(localStorage.getItem('nexus_expenses')) || [
+      { id: 'exp-1', title: 'خرید اشتراک ادوبی', category: 'خرید اشتراک', amount: 2500000, date: '1405/08/05' }
+    ];
+
+    let currentModule = 'HOME';
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('login-user').value.trim();
+      const p = document.getElementById('login-pass').value.trim();
+
+      const found = USERS.find(x => x.username === u && x.pass === p);
+      if (found) {
+        currentUser = { ...found };
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app-container').classList.remove('hidden');
+        applyPermissions();
+        renderAll();
+        updateDateTimeAndOccasions();
+        switchModule('HOME');
+      } else {
+        alert('نام کاربری یا رمز عبور اشتباه است!');
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('app-container').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+    }
+
+    function switchUserRole(newRole) {
+      currentUser.role = newRole;
+      applyPermissions();
+      switchModule('HOME');
+    }
+
+    function applyPermissions() {
+      const roleBadge = document.getElementById('user-role-badge');
+      const roleSwitcher = document.getElementById('role-switcher');
+      const tabFinance = document.getElementById('tab-finance');
+      const tabAiScript = document.getElementById('tab-ai-script');
+      const btnAddContract = document.getElementById('btn-add-contract');
+      const btnAddStaff = document.getElementById('btn-add-staff');
+
+      roleSwitcher.style.display = 'inline-block';
+      roleSwitcher.value = currentUser.role;
+
+      if (currentUser.role === 'MANAGER') {
+        roleBadge.textContent = 'نقش: مدیر کل (استودیو محمدزاده)';
+        tabFinance.classList.remove('hidden');
+        tabAiScript.classList.remove('hidden');
+        if (btnAddContract) btnAddContract.style.display = 'flex';
+        if (btnAddStaff) btnAddStaff.style.display = 'flex';
+      } else if (currentUser.role === 'SUPERVISOR') {
+        roleBadge.textContent = 'نقش: سرپرست استودیو';
+        tabFinance.classList.add('hidden');
+        tabAiScript.classList.remove('hidden');
+        if (btnAddContract) btnAddContract.style.display = 'none';
+        if (btnAddStaff) btnAddStaff.style.display = 'none';
+      } else {
+        roleBadge.textContent = 'نقش: سناریست';
+        tabFinance.classList.add('hidden');
+        tabAiScript.classList.remove('hidden');
+        if (btnAddContract) btnAddContract.style.display = 'none';
+        if (btnAddStaff) btnAddStaff.style.display = 'none';
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('nexus_deliverables', JSON.stringify(deliverables));
+      localStorage.setItem('nexus_contracts', JSON.stringify(contracts));
+      localStorage.setItem('nexus_staff', JSON.stringify(staff));
+      localStorage.setItem('nexus_expenses', JSON.stringify(expenses));
+    }
+
+    function formatToman(n) {
+      return new Intl.NumberFormat('fa-IR').format(Math.round(Number(n) || 0)) + ' تومان';
+    }
+
+    function updateDateTimeAndOccasions() {
+      const now = new Date();
+      const optionsDate = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', calendar: 'persian' };
+      const dateStr = new Intl.DateTimeFormat('fa-IR', optionsDate).format(now);
+      const timeStr = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById('live-datetime').textContent = `${dateStr} | ساعت ${timeStr}`;
+      document.getElementById('occasion-text').textContent = "مناسبت امروز: روز ملی کیفیت و ارتباطات دیجیتال";
+    }
+
+    function switchModule(mod) {
+      if (mod === 'FINANCE' && currentUser.role !== 'MANAGER') {
+        alert('شما به گزارش مالی دسترسی ندارید.');
+        return;
+      }
+
+      currentModule = mod;
+      const map = {
+        HOME: 'home',
+        PIPELINE: 'pipeline',
+        SCHEDULE: 'schedule',
+        AI_SCRIPT: 'ai-script',
+        CONTRACTS: 'contracts',
+        PAYROLL: 'payroll',
+        FINANCE: 'finance'
+      };
+      Object.entries(map).forEach(([key, slug]) => {
+        const el = document.getElementById('module-' + slug);
+        const btn = document.getElementById('tab-' + slug);
+        const isActive = key === mod;
+        if (el) el.classList.toggle('hidden', !isActive);
+        if (btn) {
+          if (isActive) {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 bg-white dark:bg-zinc-800 text-zinc-950 dark:text-white shadow-xs whitespace-nowrap transition-all cursor-pointer';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white whitespace-nowrap transition-all cursor-pointer';
+          }
+        }
+      });
+
+      if (mod === 'HOME') renderHomeStats();
+      if (mod === 'FINANCE') renderFinanceReport();
+      if (mod === 'SCHEDULE') renderScheduleTable();
+      lucide.createIcons();
+    }
+
+    function renderHomeStats() {
+      document.getElementById('stat-contracts-count').textContent = contracts.length;
+      document.getElementById('stat-tasks-count').textContent = deliverables.length;
+      const stCountEl = document.getElementById('stat-staff-count');
+      if (stCountEl) stCountEl.textContent = staff.length;
+      let totalMRR = contracts.reduce((sum, c) => sum + Number(c.fee), 0);
+      document.getElementById('stat-mrr-sum').textContent = formatToman(totalMRR);
+      document.getElementById('stat-schedule-count').textContent = contracts.length * 2;
+
+      document.getElementById('briefing-payments').textContent = `تعداد ${contracts.length} قرارداد فعال با مهلت تسویه و مدیریت چک ثبت شده است.`;
+      document.getElementById('briefing-schedule').textContent = `برنامه‌ریزی تصویربرداری فرمولی (شنبه تا چهارشنبه) بروز شد.`;
+      
+      let totalMRRCalc = contracts.reduce((sum, c) => sum + Number(c.fee), 0);
+      let totalP = staff.reduce((sum, s) => sum + Number(s.base), 0) + expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+      document.getElementById('briefing-profit').textContent = `سود ناخالص فعلی: ${formatToman(totalMRRCalc - totalP)}`;
+    }
+
+    // فرمول‌بندی تقویم تصویربرداری (شنبه تا چهارشنبه، ساعت ۱۰ تا ۱۹، براساس اولویت‌ها)
+    function renderScheduleTable() {
+      const tbody = document.getElementById('schedule-table-body');
+      const days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
+      
+      let sortedContracts = [...contracts].sort((a, b) => (Number(a.priority || 2) - Number(b.priority || 2)));
+
+      let rowsHtml = '';
+      sortedContracts.forEach((c, idx) => {
+        let assignedDay = days[idx % days.length];
+        let priorityLabel = String(c.priority) === '1'
+          ? '<span class="text-rose-500 font-bold">اولویت اول (فوری)</span>'
+          : (String(c.priority) === '3' ? '<span class="text-zinc-400">اولویت سوم</span>' : '<span class="text-blue-400">اولویت دوم</span>');
+        let totalWorks = (c.quotas?.reels || 0) + (c.quotas?.carousels || 0);
+
+        rowsHtml += `
+          <tr>
+            <td class="py-3 px-3 font-medium text-zinc-950 dark:text-white">${assignedDay}</td>
+            <td class="py-3 px-3 font-mono">۱۰:۰۰ الی ۱۹:۰۰</td>
+            <td class="py-3 px-3 font-medium">${c.client} <span class="text-[10px] text-zinc-400">(${c.handle})</span></td>
+            <td class="py-3 px-3">${priorityLabel}</td>
+            <td class="py-3 px-3 font-mono">${totalWorks} محتوا (سهمیه ماهانه)</td>
+            <td class="py-3 px-3 text-center">
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px]">ارسال نوتیفیکیشن به تیم ✔</span>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = rowsHtml || `<tr><td colspan="6" class="text-center py-4 text-zinc-400">قراردادی ثبت نشده است.</td></tr>`;
+    }
+
+    function autoScheduleCalendar() {
+      renderScheduleTable();
+      alert('تقویم تصویربرداری به صورت فرمولی برای تمام پروژه‌ها بر اساس اولویت‌ها و بازه شنبه تا چهارشنبه (۱۰ الی ۱۹) چیده شد و نوتیفیکیشن تیم صادر گردید.');
+    }
+
+    function sendClientReportTelegram(clientName) {
+      const c = contracts.find(x => x.client === clientName);
+      if (!c) return;
+
+      const reportText = `📌 *گزارش پیشرفت پروژه - استودیو تبلیغات محمدزاده*\n` +
+        `کاربر گرامی (${c.client})\n\n` +
+        `🔹 وضعیت قرارداد: ${c.ended ? 'پایان یافته' : 'فعال'}\n` +
+        `🔹 بازه زمانی: از ${c.start} تا ${c.end}\n` +
+        `🔹 مهلت پرداخت: ${c.due || 'تا ۱۰م هر ماه'} (${c.payType || 'چک ثبت شده'})\n` +
+        `🔹 سهمیه مصوب ماهانه: ${c.quotas.reels} ریلز، ${c.quotas.carousels} کاروسل\n\n` +
+        `✅ تولید محتوا طبق تقویم در حال اجراست. با تشکر از همراهی شما.`;
+
+      const encoded = encodeURIComponent(reportText);
+      window.open(`https://t.me/share/url?url=&text=${encoded}`, '_blank');
+    }
+
+    function generateAiScript() {
+      const topic = document.getElementById('ai-topic').value || 'محصول جدید استودیو';
+      const tone = document.getElementById('ai-tone').value;
+      const cta = document.getElementById('ai-cta').value || 'ثبت سفارش در دایرکت';
+
+      const box = document.getElementById('ai-output-box');
+      box.textContent = 'در حال اتصال به هوش مصنوعی...';
+
+      setTimeout(() => {
+        box.textContent =
+          `🎬 سناریوی پیشنهادی هوش مصنوعی (استودیو محمدزاده)\n\n` +
+          `📌 موضوع: ${topic}\n` +
+          `🎭 لحن: ${tone}\n\n` +
+          `1️⃣ قلاب (Hook): "راز موفقیت برندهای بزرگ در تولید محتوا چیست؟"\n\n` +
+          `2️⃣ بدنه (Body): معرفی ویژگی‌های کلیدی ${topic} به صورت تخصصی و جذاب.\n\n` +
+          `3️⃣ کال تو اکشن (CTA): "${cta}"`;
+      }, 600);
+    }
+
+    function copyAiScript() {
+      const text = document.getElementById('ai-output-box').innerText;
+      navigator.clipboard.writeText(text);
+      alert('سناریو کپی شد!');
+    }
+
+    function saveAiScriptToPipeline() {
+      const topic = document.getElementById('ai-topic').value || 'سناریوی هوش مصنوعی';
+      const client = contracts[0] ? contracts[0].client : 'استودیو محمدزاده';
+      deliverables.unshift({ id: 'd-' + Date.now(), client, title: topic, type: 'REEL', stage: 'FILMING' });
+      saveData();
+      renderAll();
+      switchModule('PIPELINE');
+    }
+
+    function toggleAiChat() {
+      document.getElementById('ai-chat-widget').classList.toggle('hidden');
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg) return;
+      const chatMsgs = document.getElementById('chat-messages');
+      chatMsgs.innerHTML += `<div class="p-2.5 rounded-xl bg-blue-600 text-white max-w-[85%] mr-auto">${msg}</div>`;
+      input.value = '';
+      setTimeout(() => {
+        chatMsgs.innerHTML += `<div class="p-2.5 rounded-xl bg-zinc-800 text-zinc-200 max-w-[85%]">استودیو هم‌اکنون ${contracts.length} قرارداد فعال دارد و تقویم تصویربرداری بروز است.</div>`;
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+      }, 500);
+    }
+
+    function toggleNotifications() {
+      document.getElementById('notification-panel').classList.toggle('hidden');
+    }
+
+    function clearNotifications() {
+      document.getElementById('notif-list').innerHTML = `<div class="text-center text-zinc-400 py-2">اعلانی وجود ندارد.</div>`;
+    }
+
+    function populateAdminSelect(selectedId) {
+      const sel = document.getElementById('con-admin');
+      if (!sel) return;
+      sel.innerHTML = staff.map(s => `<option value="${s.id}" ${s.id === selectedId ? 'selected' : ''}>${s.name} (${s.role})</option>`).join('');
+    }
+
+    function openContractModal(id = null) {
+      if (currentUser.role !== 'MANAGER') {
+        alert('فقط مدیر کل مجاز به ثبت یا ویرایش قرارداد است.');
+        return;
+      }
+      populateAdminSelect(staff[0]?.id || '');
+      if (id) {
+        const c = contracts.find(x => x.id === id);
+        if (!c) return;
+        document.getElementById('contract-modal-title').textContent = 'ویرایش قرارداد ریتینر';
+        document.getElementById('con-id').value = c.id;
+        document.getElementById('con-client').value = c.client;
+        document.getElementById('con-handle').value = c.handle || '';
+        document.getElementById('con-phone').value = c.phone || '';
+        document.getElementById('con-fee').value = c.fee;
+        document.getElementById('con-start').value = c.start || '1405/08/01';
+        document.getElementById('con-end').value = c.end || '1406/08/01';
+        document.getElementById('con-due').value = c.due || 'تا ۱۰م هر ماه';
+        document.getElementById('con-pay-type').value = c.payType || 'نقدی / واریز مستقیم';
+        populateAdminSelect(c.adminId);
+        document.getElementById('con-admin-type').value = c.adminType || 'FULL';
+        document.getElementById('con-priority').value = c.priority || '2';
+        document.getElementById('con-ended').checked = !!c.ended;
+        document.getElementById('con-reels').value = c.quotas?.reels ?? 8;
+        document.getElementById('con-carousels').value = c.quotas?.carousels ?? 4;
+        document.getElementById('con-posts').value = c.quotas?.posts ?? 4;
+      } else {
+        document.getElementById('contract-modal-title').textContent = 'ثبت قرارداد ریتینر جدید';
+        document.getElementById('con-id').value = '';
+        document.getElementById('con-client').value = '';
+        document.getElementById('con-handle').value = '';
+        document.getElementById('con-phone').value = '';
+        document.getElementById('con-fee').value = '';
+        document.getElementById('con-start').value = '1405/08/01';
+        document.getElementById('con-end').value = '1406/08/01';
+        document.getElementById('con-due').value = 'تا ۱۰م هر ماه';
+        document.getElementById('con-pay-type').value = 'پرداخت با چک (ثبت شده)';
+        document.getElementById('con-admin-type').value = 'FULL';
+        document.getElementById('con-priority').value = '2';
+        document.getElementById('con-ended').checked = false;
+        document.getElementById('con-reels').value = 8;
+        document.getElementById('con-carousels').value = 4;
+        document.getElementById('con-posts').value = 4;
+      }
+      document.getElementById('modal-contract').classList.remove('hidden');
+    }
+
+    function handleSaveContract(e) {
+      e.preventDefault();
+      const id = document.getElementById('con-id').value;
+      const client = document.getElementById('con-client').value.trim();
+      const handle = document.getElementById('con-handle').value.trim();
+      const phone = document.getElementById('con-phone').value.trim();
+      const fee = Number(document.getElementById('con-fee').value);
+      const start = document.getElementById('con-start').value.trim();
+      const end = document.getElementById('con-end').value.trim();
+      const due = document.getElementById('con-due').value.trim();
+      const payType = document.getElementById('con-pay-type').value;
+      const adminId = document.getElementById('con-admin').value;
+      const adminType = document.getElementById('con-admin-type').value;
+      const priority = document.getElementById('con-priority').value;
+      const ended = document.getElementById('con-ended').checked;
+      const reels = Number(document.getElementById('con-reels').value);
+      const carousels = Number(document.getElementById('con-carousels').value);
+      const posts = Number(document.getElementById('con-posts').value);
+
+      if (id) {
+        const idx = contracts.findIndex(x => x.id === id);
+        if (idx > -1) {
+          contracts[idx] = { ...contracts[idx], client, handle, phone, fee, start, end, due, payType, adminId, adminType, priority, ended, quotas: { reels, carousels, posts } };
+        }
+      } else {
+        contracts.push({
+          id: 'c-' + Date.now(),
+          client, handle, phone, fee, start, end, due, payType, adminId, adminType, priority, ended,
+          quotas: { reels, carousels, posts },
+          status: 'فعال'
+        });
+        for (let i = 0; i < reels; i++) {
+          deliverables.push({ id: `d-${Date.now()}-r${i}`, client, title: `ریلز ${i + 1} (${client})`, type: 'REEL', stage: 'SCRIPT' });
+        }
+        for (let i = 0; i < carousels; i++) {
+          deliverables.push({ id: `d-${Date.now()}-c${i}`, client, title: `کاروسل ${i + 1} (${client})`, type: 'CAROUSEL', stage: 'SCRIPT' });
+        }
+      }
+      saveData();
+      closeModal('modal-contract');
+      renderAll();
+    }
+
+    function deleteContract(id) {
+      if (currentUser.role !== 'MANAGER') return;
+      contracts = contracts.filter(x => x.id !== id);
+      saveData();
+      renderAll();
+    }
+
+    function openStaffModal(id = null) {
+      if (currentUser.role !== 'MANAGER') return;
+      if (id) {
+        const s = staff.find(x => x.id === id);
+        if (!s) return;
+        document.getElementById('staff-modal-title').textContent = 'ویرایش پرسنل';
+        document.getElementById('st-id').value = s.id;
+        document.getElementById('st-name').value = s.name;
+        document.getElementById('st-role').value = s.role;
+        document.getElementById('st-base').value = s.base;
+        document.getElementById('st-rate').value = s.rate;
+      } else {
+        document.getElementById('staff-modal-title').textContent = 'ثبت پرسنل جدید';
+        document.getElementById('st-id').value = '';
+        document.getElementById('st-name').value = '';
+        document.getElementById('st-role').value = '';
+        document.getElementById('st-base').value = '';
+        document.getElementById('st-rate').value = 5;
+      }
+      document.getElementById('modal-staff').classList.remove('hidden');
+    }
+
+    function handleSaveStaff(e) {
+      e.preventDefault();
+      const id = document.getElementById('st-id').value;
+      const name = document.getElementById('st-name').value.trim();
+      const role = document.getElementById('st-role').value.trim();
+      const base = Number(document.getElementById('st-base').value);
+      const rate = Number(document.getElementById('st-rate').value);
+      if (id) {
+        const idx = staff.findIndex(x => x.id === id);
+        if (idx > -1) staff[idx] = { ...staff[idx], name, role, base, rate };
+      } else {
+        staff.push({ id: 'st-' + Date.now(), name, role, base, rate, status: 'فعال' });
+      }
+      saveData();
+      closeModal('modal-staff');
+      renderAll();
+    }
+
+    function deleteStaff(id) {
+      if (currentUser.role !== 'MANAGER') return;
+      staff = staff.filter(x => x.id !== id);
+      saveData();
+      renderAll();
+    }
+
+    function openExpenseModal() {
+      document.getElementById('exp-title').value = '';
+      document.getElementById('exp-amount').value = '';
+      document.getElementById('modal-expense').classList.remove('hidden');
+    }
+
+    function handleSaveExpense(e) {
+      e.preventDefault();
+      const title = document.getElementById('exp-title').value.trim();
+      const category = document.getElementById('exp-category').value;
+      const amount = Number(document.getElementById('exp-amount').value);
+      expenses.unshift({ id: 'exp-' + Date.now(), title, category, amount, date: '1405/08/10' });
+      saveData();
+      closeModal('modal-expense');
+      renderAll();
+    }
+
+    function deleteExpense(id) {
+      expenses = expenses.filter(x => x.id !== id);
+      saveData();
+      renderAll();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function advanceStage(id) {
+      const item = deliverables.find(d => d.id === id);
+      if (!item) return;
+      const keys = PIPELINE_STAGES.map(s => s.key);
+      const idx = keys.indexOf(item.stage);
+      if (idx < keys.length - 1) {
+        item.stage = keys[idx + 1];
+        saveData();
+        renderPipelineBoard();
+      }
+    }
+
+    function renderPipelineBoard() {
+      const container = document.getElementById('kanban-columns-container');
+      container.innerHTML = '';
+      PIPELINE_STAGES.forEach((stage, idx) => {
+        const stageItems = deliverables.filter(d => d.stage === stage.key);
+        const col = document.createElement('div');
+        col.className = 'glass-subtle rounded-2xl p-3 flex flex-col min-h-[420px]';
+        col.innerHTML = `
+          <div class="flex items-center justify-between pb-2.5 border-b border-black/[0.04] dark:border-white/[0.06] mb-2.5">
+            <span class="font-semibold text-xs text-zinc-950 dark:text-white">${stage.title}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-200/60 dark:bg-zinc-800">${stageItems.length}</span>
+          </div>
+          <div class="space-y-2.5 flex-1">
+            ${stageItems.map(item => `
+              <div class="glass-card rounded-xl p-2.5 space-y-1.5">
+                <div class="text-[9px] text-purple-500">${item.type}</div>
+                <div class="text-xs font-semibold text-zinc-950 dark:text-white">${item.title}</div>
+                <div class="text-[9px] text-zinc-500">${item.client}</div>
+                ${idx < PIPELINE_STAGES.length - 1 ? `<button onclick="advanceStage('${item.id}')" class="w-full py-1 rounded bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-[10px] cursor-pointer">مرحله بعد</button>` : `<div class="text-[9px] text-emerald-500 text-center">منتشر شده ✔</div>`}
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+
+    function renderContractsTable() {
+      const tbody = document.getElementById('contracts-table-body');
+      tbody.innerHTML = contracts.map(c => {
+        const adminObj = staff.find(s => s.id === c.adminId);
+        const adminName = adminObj ? adminObj.name : 'تعیین نشده';
+        const adminRateLabel = c.adminType === 'HALF' ? 'نصف ادمینی (۵۸,۴۰۰ ت/روز)' : 'کل ادمینی (۱۱۶,۶۷۰ ت/روز)';
+        return `
+          <tr>
+            <td class="py-3 px-3 font-medium">
+              <div>${c.client} <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400">اولویت ${c.priority || 2}</span></div>
+              <div class="text-[10px] text-zinc-400 font-mono" dir="ltr">${c.handle} | ${c.phone}</div>
+            </td>
+            <td class="py-3 px-3">
+              <div class="font-mono text-[11px]">از ${c.start} تا ${c.end}</div>
+              ${c.ended ? '<span class="text-[10px] text-rose-500 font-bold">پایان همکاری</span>' : '<span class="text-[10px] text-emerald-500">در حال همکاری</span>'}
+            </td>
+            <td class="py-3 px-3">
+              <div class="font-mono font-bold">${formatToman(c.fee)}</div>
+              <div class="text-[10px] text-amber-500">مهلت: ${c.due || 'تا ۱۰م ماه'}</div>
+              <div class="text-[10px] text-blue-400">${c.payType || 'چک ثبت شده'}</div>
+            </td>
+            <td class="py-3 px-3">
+              <div class="font-semibold">${adminName}</div>
+              <div class="text-[10px] text-purple-400">${adminRateLabel}</div>
+            </td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="sendClientReportTelegram('${c.client}')" class="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[10px] cursor-pointer">ارسال گزارش تلگرام</button>
+            </td>
+            <td class="py-3 px-3 text-center space-x-2 space-x-reverse">
+              ${currentUser && currentUser.role === 'MANAGER' ? `
+                <button onclick="openContractModal('${c.id}')" class="text-blue-500 hover:underline text-xs cursor-pointer">ویرایش</button>
+                <button onclick="deleteContract('${c.id}')" class="text-rose-500 hover:underline text-xs cursor-pointer">حذف</button>
+              ` : `<span class="text-emerald-500 text-[10px]">فعال</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderStaffTable() {
+      const tbody = document.getElementById('payroll-table-body');
+      tbody.innerHTML = staff.map(s => `
+        <tr>
+          <td class="py-3 px-3 font-medium">${s.name} <span class="text-zinc-400 text-[10px]">(${s.role})</span></td>
+          <td class="py-3 px-3 font-mono">${currentUser && currentUser.role === 'MANAGER' ? formatToman(s.base) : 'محرمانه'}</td>
+          <td class="py-3 px-3 font-mono">${s.rate}%</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 text-[10px]">${s.status}</span></td>
+          <td class="py-3 px-3 text-center space-x-2 space-x-reverse">
+            ${currentUser && currentUser.role === 'MANAGER' ? `
+              <button onclick="openStaffModal('${s.id}')" class="text-blue-500 hover:underline text-xs cursor-pointer">ویرایش</button>
+              <button onclick="deleteStaff('${s.id}')" class="text-rose-500 hover:underline text-xs cursor-pointer">حذف</button>
+            ` : `<span class="text-zinc-400 text-[10px]">مشاهده</span>`}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderFinanceReport() {
+      let totalMRR = contracts.reduce((sum, c) => sum + Number(c.fee), 0);
+      let totalBase = staff.reduce((sum, s) => sum + Number(s.base), 0);
+      let totalExp = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+
+      // محاسبه حق‌الزحمه ادمینی کل پرسنل
+      let totalAdminFees = 0;
+      const adminEarningsHtml = staff.map(s => {
+        const managedContracts = contracts.filter(c => c.adminId === s.id);
+        let adminFee = 0;
+        let hasEnded = false;
+        managedContracts.forEach(c => {
+          const daily = c.adminType === 'HALF' ? 58400 : 116670;
+          adminFee += daily * 30;
+          if (c.ended) hasEnded = true;
+        });
+        totalAdminFees += adminFee;
+        const totalPay = Number(s.base) + adminFee;
+        return `
+          <tr>
+            <td class="py-3 px-3 font-bold">${s.name}</td>
+            <td class="py-3 px-3">${managedContracts.length ? managedContracts.map(c => `<span class="inline-block ml-1 px-2 py-0.5 rounded bg-zinc-500/10 text-[10px]">${c.client} (${c.adminType === 'HALF' ? 'نصف' : 'کل'})</span>`).join('') : '<span class="text-zinc-400">بدون پیج</span>'}</td>
+            <td class="py-3 px-3 font-mono">${formatToman(s.base)}</td>
+            <td class="py-3 px-3 font-mono text-purple-400">+${formatToman(adminFee)}</td>
+            <td class="py-3 px-3 font-mono font-bold text-emerald-500">${formatToman(totalPay)} ${hasEnded ? '<span class="text-[10px] text-rose-500">(تسویه پایان همکاری)</span>' : ''}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const totalPayrollAll = totalBase + totalAdminFees;
+      const netProfit = totalMRR - (totalPayrollAll + totalExp);
+
+      document.getElementById('fin-mrr').textContent = formatToman(totalMRR);
+      document.getElementById('fin-base-payroll').textContent = formatToman(totalPayrollAll);
+      document.getElementById('fin-expenses-sum').textContent = formatToman(totalExp);
+      document.getElementById('fin-profit').textContent = formatToman(netProfit);
+
+      document.getElementById('admin-earnings-body').innerHTML = adminEarningsHtml;
+
+      // جدول هزینه‌ها
+      document.getElementById('expenses-table-body').innerHTML = expenses.map(ex => `
+        <tr>
+          <td class="py-2.5 px-3 font-medium">${ex.title}</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 text-[10px]">${ex.category}</span></td>
+          <td class="py-2.5 px-3 font-mono text-rose-500 font-bold">${formatToman(ex.amount)}</td>
+          <td class="py-2.5 px-3 font-mono text-zinc-400">${ex.date}</td>
+          <td class="py-2.5 px-3 text-center"><button onclick="deleteExpense('${ex.id}')" class="text-rose-500 hover:underline text-[10px] cursor-pointer">حذف</button></td>
+        </tr>
+      `).join('');
+
+      // جدول تحلیل سود و هزینه به ازای هر مشتری (P&L)
+      const sharedOverheadPerClient = contracts.length > 0 ? Math.round((totalBase + totalExp) / contracts.length) : 0;
+      document.getElementById('client-pl-body').innerHTML = contracts.map(c => {
+        const directAdminCost = (c.adminType === 'HALF' ? 58400 : 116670) * 30;
+        const allocatedCost = sharedOverheadPerClient + directAdminCost;
+        const clientProfit = Number(c.fee) - allocatedCost;
+        const margin = c.fee > 0 ? Math.round((clientProfit / Number(c.fee)) * 100) : 0;
+        return `
+          <tr>
+            <td class="py-3 px-3 font-bold">${c.client}</td>
+            <td class="py-3 px-3 font-mono text-emerald-500">${formatToman(c.fee)}</td>
+            <td class="py-3 px-3 font-mono text-rose-500">${formatToman(allocatedCost)}</td>
+            <td class="py-3 px-3 font-mono font-bold ${clientProfit >= 0 ? 'text-blue-400' : 'text-rose-500'}">${formatToman(clientProfit)}</td>
+            <td class="py-3 px-3 font-mono"><span class="px-2 py-0.5 rounded ${margin >= 25 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'} text-[10px] font-bold">%${margin}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderAll() {
+      renderHomeStats();
+      renderPipelineBoard();
+      renderScheduleTable();
+      renderContractsTable();
+      renderStaffTable();
+      if (currentUser && currentUser.role === 'MANAGER') {
+        renderFinanceReport();
+      }
+      lucide.createIcons();
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateDateTimeAndOccasions();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
